@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Image, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, View, Text, TextInput, TouchableOpacity, Platform } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -9,17 +9,28 @@ import { connect, disconnect, subscribeToNewDevs } from '../services/socket';
 
 function Main({ navigation }) {
 	const [ devs, setDevs ] = useState([]);
+	const [coords, setCoords] = useState({});
 	const [ techs, setTechs ] = useState('');
-	const [currentRegion, setCurrentRegion] = useState(null);
+	const [currentRegion, setCurrentRegion] = useState({
+		longitude: -42.7173847,
+		latitude: -5.1041916,
+		latitudeDelta: 0.04,
+		longitudeDelta: 0.04,
+	});
 
 	useEffect(() => {
 		async function loadInitialPosition() {
 			const { granted } = await requestPermissionsAsync();
 
+			console.log(granted)
 			if (granted) {
-				const { coords } = await getCurrentPositionAsync({
+				if (Platform.OS === "android") {
+					await getCurrentPositionAsync({}).then(location => setCoords(location.coords)).catch(err => console.log(err));
+			 } else{
+				await getCurrentPositionAsync({
 					enableHighAccuracy: true,
-				});
+				}).then(location => setCoords(location.coords));
+			 }
 
 				const { latitude, longitude } = coords;
 

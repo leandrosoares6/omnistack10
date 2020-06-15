@@ -10,7 +10,7 @@ const server = http.Server(app);
 
 setupWebSocket(server);
 
-mongoose.connect('mongodb+srv://<user>:<password>@<cluster>', {
+mongoose.connect('mongodb://localhost:27017/omnistack10', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -20,14 +20,3 @@ app.use(express.json());
 app.use(routes);
 
 server.listen(3333);
-
-
-// Métodos HTTP: GET, POST, PUT e DELETE
-
-// Tipos de parâmetros:
-
-// Query Paramns: request.query (Filtros, ordenação, paginação, ...)
-// Route Params: request.params (Identificar um recurso na alteração ou deleção)
-// Body: request.body (Dados para criação ou alteração de um registro)
-
-// MongoDB (Não-relacional)
